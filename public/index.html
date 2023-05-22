@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ar-AR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>OpenAI Chatbot</title>
+  </head>
+  <body>
+    <div id="container">
+      <h1>OpenAI Chatbot</h1>
+      <div id="chatbox"></div>
+      <form>
+        <input type="text" id="message" />
+        <button type="submit" id="send">Send</button>
+      </form>
+    </div>
+
+    <script>
+      const form = document.querySelector("form");
+      const messageInput = document.querySelector("#message");
+      const chatbox = document.querySelector("#chatbox");
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const message = messageInput.value;
+        messageInput.value = "";
+        const response = await fetch("/api/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ message }),
+        });
+        const data = await response.json();
+        const answer = data.completion;
+        const chatEntry = document.createElement("div");
+        chatEntry.innerHTML = `
+          <strong>You:</strong> ${message}<br>
+          <strong>Chatbot:</strong> ${answer}<br>
+        `;
+        chatbox.appendChild(chatEntry);
+      });
+    </script>
+  </body>
+</html>
